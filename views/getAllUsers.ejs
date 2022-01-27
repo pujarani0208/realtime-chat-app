@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('./head'); %>
+</head>
+<body class="container">
+
+<header>
+  <%- include('./header'); %>
+</header>
+
+<main>
+  <div class="jumbotron">
+        <h2> Request to chat users</h2>
+        <% userArray.forEach(function(user){ %>
+          <div>
+            <img src="/<%= user.userPhoto %>" class="rounded-circle"
+          alt="Sample avatar image."
+          width="50" height="50" border: 5px solid #FF1493; padding:1em;>
+            <%- user.userName %></div>
+        <%});%>
+  </div>
+</main>
+
+<footer>
+  <%- include('./footer'); %>
+</footer>
+
+</body>
+</html>

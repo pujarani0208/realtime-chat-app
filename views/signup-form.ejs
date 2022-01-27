@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('./head'); %>
+</head>
+<body class="container">
+
+<header>
+  <%- include('./header'); %>
+</header>
+
+<main>
+  <div class="jumbotron">
+    <h2> Hi! Create your account</h2>
+  
+<form action="/api/signup" method="POST" enctype="multipart/form-data">
+    <input type="text" name="name"
+        placeholder="Name">
+    <input type="text" name="email" 
+        placeholder="Email">
+    <input type="text" name="dob" 
+        placeholder="Date of Birth">
+    <input type="password" name="password" 
+        placeholder="Password">
+        <input type="password" name="passwordConfirm" 
+        placeholder="Re-enter Password"><br>
+    <input type="file" name="photo" placeholder="Image"><br>
+    <button>Submit</button>
+</form>
+  </div>
+</main>
+
+<footer>
+  <%- include('./footer'); %>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+   <script src="/socket.io/socket.io.js"></script>
+   <script>
+      var socket = io();
+      var userr = '<%- user.name %>';
+      var roome = '<%- room %>' ;
+      var photoUrl = '<%- user.photo %>'
+      const roomName = document.getElementById('room-name');
+      const userList = document.getElementById('users');
+      const notification = document.getElementById('notifications');
+
+      function setUserName() {
+         const userName = userr;
+         const room = roome;
+   
+         socket.emit('joinRoom', {username: userName,room: room, photo : photoUrl});
+      }
+      
+      socket.on('message', (data) => {
+         const chatMessages = document.getElementById('chat-messages');
+         const pics = data.user.photo;
+         const time = new Date().toLocaleTimeString();
+         
+         if(userr === data.user.username) {
+            chatMessages.innerHTML += '<li class="chat-left"> \
+                                         <div class="chat-avatar"> \
+                                             <img src="/' + pics + '" alt="Retail Admin" width="50" height="50"> \
+                                             <div class="chat-name">' + data.user.username + '</div> \
+                                         </div> \
+                                         <div class="chat-text"> ' + '<br>' + data.msg + '</div>' +
+                                         '<div class="chat-hour">' + time + '<span class="fa fa-check-circle"></span></div> </li>'
+         } else {
+            chatMessages.innerHTML += '<li class="chat-right"> \
+                                         <div class="chat-avatar"> \
+                                             <img src="/' + pics + '" alt="Retail Admin" width="50" height="50"> \
+                                             <div class="chat-name">' + data.user.username + '</div> \
+                                         </div> \
+                                         <div class="chat-text"> ' + '<br>' + data.msg + '</div>' +
+                                         '<div class="chat-hour">' + time + '<span class="fa fa-check-circle"></span></div> </li>'
+         }
+      });
+
+      socket.on('notification', (msg) => {
+         const notification = document.getElementById('notifications');
+         notification.innerHTML += '<div>' + msg + '</div>';
+      })
+      
+      socket.on('roomUsers', ({ room, users }) => {
+         const showUsers = document.getElementById('users');
+         const showRoom = document.getElementById('room-name');
+         users.forEach(user => {
+            const li = document.createElement('li');
+            li.innerText = user.username;
+            showUsers.appendChild(li);
+         });
+         showRoom.innerHTML = 'Room : ' + room;
+      });
+      
+      // Message submit
+      function sendMessage() {
+        var msg = document.getElementById("msg").value;
+         // Emit message to server
+         socket.emit('chatMessage', msg);
+      }
+
+   </script>
+
+
+   <head>
+      <%- include('./head'); %>
+   </head>
+   <body onload="setUserName()">
+
+ <div class="container">
+   <header>
+      <%- include('./header'); %>
+    </header>
+     <!-- Page header start -->
+     <div class="page-title">
+         <div class="row gutters">
+             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+             </div>
+             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"> </div>
+         </div>
+     </div>
+     <!-- Page header end -->
+ 
+     <!-- Content wrapper start -->
+     <div class="content-wrapper">
+ 
+         <!-- Row start -->
+         <div class="row gutters">
+ 
+             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+ 
+                 <div class="card m-0">
+ 
+                     <!-- Row start -->
+                     <div class="row no-gutters">
+                         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
+                             <div class="users-container">
+                                 <div class="chat-search-box">
+                                     <div class="input-group">
+                                         <input class="form-control" placeholder="Search">
+                                         <div class="input-group-btn">
+                                             <button type="button" class="btn btn-info">
+                                                 <i class="fa fa-search"></i>
+                                             </button>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 
+                                 <ul class="users">
+                                    <p class="blue-text">Notification</p>
+                                          <div id = "notifications">
+                                          </div>
+                                          <p> connected users are</p>
+                                          <div id = "users"></div>
+                                    
+                                 </ul>
+                             </div>
+                         </div>
+
+
+                         <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
+                             <div class="selected-user" id = "room-name" class = "name">
+                             </div>
+                             <div class="chat-container">
+                                 <ul class="chat-box chatContainerScroll">
+                                    <div id = "chat-messages"></div>  
+                                 </ul>
+                                 <div class="form-group mt-3 mb-0">
+                                     <input id = "msg" rows="2" placeholder="Type your message here..."></input>
+                                     <button type="button" name="button" onclick="sendMessage()"> Let's chat </button>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <!-- Row end -->
+                 </div>
+ 
+             </div>
+ 
+         </div>
+         <!-- Row end -->
+ 
+     </div>
+     <!-- Content wrapper end -->
+ 
+ </div>
+
+ 
+     <footer>
+      <%- include('./footer'); %>
+    </footer>
+      </body>
+   </html>
